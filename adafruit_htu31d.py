@@ -39,10 +39,11 @@ _HTU31D_DEFAULT_ADDR = const(0x40)  # HTU31D default I2C Address
 
 _HTU31D_READSERIAL = const(0x0A)  # Read Out of Serial Register
 _HTU31D_SOFTRESET = const(0x1E)  # Soft Reset
-_HTU31D_HEATERON = const(0x04) # Enable heater
-_HTU31D_HEATEROFF = const(0x02) # Disable heater
-_HTU31D_CONVERSION = const(0x40) # Start a conversion
-_HTU31D_READTEMPHUM = const(0x00) # Read the conversion values
+_HTU31D_HEATERON = const(0x04)  # Enable heater
+_HTU31D_HEATEROFF = const(0x02)  # Disable heater
+_HTU31D_CONVERSION = const(0x40)  # Start a conversion
+_HTU31D_READTEMPHUM = const(0x00)  # Read the conversion values
+
 
 class HTU31D:
     """
@@ -122,12 +123,12 @@ class HTU31D:
             i2c.write_then_readinto(self._buffer, self._buffer, out_end=1)
 
         # separate the read data
-        temperature, temp_crc, humidity, humidity_crc = struct.unpack_from(">HBHB", self._buffer)
+        temperature, temp_crc, humidity, humidity_crc = struct.unpack_from(
+            ">HBHB", self._buffer
+        )
 
         # check CRC of bytes
-        if temp_crc != self._crc(temperature) or humidity_crc != self._crc(
-            humidity
-        ):
+        if temp_crc != self._crc(temperature) or humidity_crc != self._crc(humidity):
             raise RuntimeError("Invalid CRC calculated")
 
         # decode data into human values:
@@ -143,7 +144,7 @@ class HTU31D:
 
     @staticmethod
     def _crc(value):
-        polynom = 0x988000   # x^8 + x^5 + x^4 + 1
+        polynom = 0x988000  # x^8 + x^5 + x^4 + 1
         msb = 0x800000
         mask = 0xFF8000
         result = value << 8  # Pad with zeros as specified in spec
