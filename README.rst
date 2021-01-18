@@ -59,7 +59,28 @@ To install in a virtual environment in your current project:
 Usage Example
 =============
 
-.. todo:: Add a quick, simple example. It and other examples should live in the examples folder and be included in docs/examples.rst.
+.. code-block:: python
+
+    import time
+    import busio
+    import board
+    import adafruit_htu31d
+
+    i2c = busio.I2C(board.SCL, board.SDA)
+    htu = adafruit_htu31d.HTU31D(i2c)
+    print("Found HTU31D with serial number", hex(htu.serial_number))
+
+    htu.heater = True
+    print("Heater is on?", htu.heater)
+    htu.heater = False
+    print("Heater is on?", htu.heater)
+
+    while True:
+        temperature, relative_humidity = htu.measurements
+        print("Temperature: %0.1f C" % temperature)
+        print("Humidity: %0.1f %%" % relative_humidity)
+        print("")
+        time.sleep(1)
 
 Contributing
 ============
