@@ -40,7 +40,7 @@ _HTU31D_DEFAULT_ADDR = const(0x40)  # HTU31D default I2C Address
 _HTU31D_READSERIAL = const(0x0A)  # Read Out of Serial Register
 _HTU31D_SOFTRESET = const(0x1E)  # Soft Reset
 _HTU31D_HEATERON = const(0x04) # Enable heater
-_HTU31D_HEATEROFF = const(0x02) # Disable heater 
+_HTU31D_HEATEROFF = const(0x02) # Disable heater
 _HTU31D_CONVERSION = const(0x40) # Start a conversion
 _HTU31D_READTEMPHUM = const(0x00) # Read the conversion values
 
@@ -81,7 +81,7 @@ class HTU31D:
     @heater.setter
     def heater(self, new_mode):
         # check its a boolean
-        if (new_mode != True) and (new_mode != False):
+        if not new_mode in (True, False):
             raise AttributeError("Heater mode must be boolean")
         # cache the mode
         self._heater = new_mode
