@@ -134,10 +134,10 @@ class HTU31D:
         # decode data into human values:
         # convert bytes into 16-bit signed integer
         # convert the LSB value to a human value according to the datasheet
-        temperature = -45.0 + 175.0 * temperature / 65535.0
+        temperature = -40.0 + 165.0 * temperature / 65535.0
 
         # repeat above steps for humidity data
-        humidity = -6.0 + 125.0 * humidity / 65535.0
+        humidity = 100 * humidity / 65535.0
         humidity = max(min(humidity, 100), 0)
 
         return (temperature, humidity)
