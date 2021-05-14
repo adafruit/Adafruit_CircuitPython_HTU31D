@@ -26,7 +26,7 @@ Table of Contents
 .. toctree::
     :caption: Related Products
 
-    Adafruit HTU31D breakout <https://www.adafruit.com/product/4832>
+    Adafruit HTU31 Temperature & Humidity Sensor Breakout Board <https://www.adafruit.com/product/4832>
 
 .. toctree::
     :caption: Other Links
