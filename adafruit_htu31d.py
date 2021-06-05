@@ -39,6 +39,8 @@ __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_HTU31D.git"
 
 _HTU31D_DEFAULT_ADDR = const(0x40)  # HTU31D default I2C Address
+_HTU31D_SECONDARY_ADDR = const(0x41)  # HTU31D alternate I2C Address
+_HTU31D_ADDRESSES = (_HTU31D_DEFAULT_ADDR, _HTU31D_SECONDARY_ADDR)
 
 _HTU31D_READSERIAL = const(0x0A)  # Read Out of Serial Register
 _HTU31D_SOFTRESET = const(0x1E)  # Soft Reset
@@ -56,6 +58,7 @@ class HTU31D:
     A driver for the HTU31D temperature and humidity sensor.
 
     :param ~busio.I2C i2c_bus: The `busio.I2C` object to use. This is the only required parameter.
+    :param int address: (optional) The I2C address of the device. Defaults to :const:`0x40`
 
     **Quickstart: Importing and using the device**
 
@@ -86,8 +89,10 @@ class HTU31D:
 
     """
 
-    def __init__(self, i2c_bus):
-        self.i2c_device = i2c_device.I2CDevice(i2c_bus, _HTU31D_DEFAULT_ADDR)
+    def __init__(self, i2c_bus, address=_HTU31D_DEFAULT_ADDR):
+        if address not in _HTU31D_ADDRESSES:
+            raise ValueError("Invalid address: 0x%x" % (address))
+        self.i2c_device = i2c_device.I2CDevice(i2c_bus, address)
         self._conversion_command = _HTU31D_CONVERSION
         self._buffer = bytearray(6)
         self.reset()
