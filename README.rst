@@ -81,6 +81,11 @@ Usage Example
         print("")
         time.sleep(1)
 
+Documentation
+=============
+
+API documentation for this library can be found on `Read the Docs <https://circuitpython.readthedocs.io/projects/htu31d/en/latest/>`_.
+
 Contributing
 ============
 
