@@ -35,6 +35,13 @@ import struct
 from adafruit_bus_device import i2c_device
 from micropython import const
 
+try:
+    from typing import Tuple
+    from typing_extensions import Literal
+    from busio import I2C
+except ImportError:
+    pass
+
 __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_HTU31D.git"
 
@@ -89,16 +96,16 @@ class HTU31D:
 
     """
 
-    def __init__(self, i2c_bus, address=_HTU31D_DEFAULT_ADDR):
+    def __init__(self, i2c_bus: I2C, address: int = _HTU31D_DEFAULT_ADDR) -> None:
         if address not in _HTU31D_ADDRESSES:
-            raise ValueError("Invalid address: 0x%x" % (address))
+            raise ValueError("Invalid address: {address:#x}")
         self.i2c_device = i2c_device.I2CDevice(i2c_bus, address)
         self._conversion_command = _HTU31D_CONVERSION
         self._buffer = bytearray(6)
         self.reset()
 
     @property
-    def serial_number(self):
+    def serial_number(self) -> int:
         """The unique 32-bit serial number"""
         self._buffer[0] = _HTU31D_READSERIAL
         with self.i2c_device as i2c:
@@ -106,7 +113,7 @@ class HTU31D:
         ser = struct.unpack(">I", self._buffer[0:4])
         return ser
 
-    def reset(self):
+    def reset(self) -> None:
         """Perform a soft reset of the sensor, resetting all settings to their power-on defaults"""
         self._conversion_command = _HTU31D_CONVERSION
         self._buffer[0] = _HTU31D_SOFTRESET
@@ -115,12 +122,12 @@ class HTU31D:
         time.sleep(0.015)
 
     @property
-    def heater(self):
+    def heater(self) -> bool:
         """The current sensor heater mode"""
         return self._heater
 
     @heater.setter
-    def heater(self, new_mode):
+    def heater(self, new_mode: bool) -> None:
         # check its a boolean
         if not new_mode in (True, False):
             raise AttributeError("Heater mode must be boolean")
@@ -135,17 +142,17 @@ class HTU31D:
             i2c.write(self._buffer, end=1)
 
     @property
-    def relative_humidity(self):
+    def relative_humidity(self) -> float:
         """The current relative humidity in % rH"""
         return self.measurements[1]
 
     @property
-    def temperature(self):
+    def temperature(self) -> float:
         """The current temperature in degrees Celsius"""
         return self.measurements[0]
 
     @property
-    def measurements(self):
+    def measurements(self) -> Tuple[float, float]:
         """both `temperature` and `relative_humidity`, read simultaneously"""
 
         temperature = None
@@ -183,7 +190,7 @@ class HTU31D:
         return (temperature, humidity)
 
     @property
-    def humidity_resolution(self):
+    def humidity_resolution(self) -> Literal["0.020%", "0.014%", "0.010%", "0.007%"]:
         """The current relative humidity resolution in % rH.
 
         Possibles values:
@@ -198,17 +205,19 @@ class HTU31D:
         return _HTU31D_HUMIDITY_RES[self._conversion_command >> 4 & 3]
 
     @humidity_resolution.setter
-    def humidity_resolution(self, value):
+    def humidity_resolution(
+        self, value: Literal["0.020%", "0.014%", "0.010%", "0.007%"]
+    ) -> None:
         if value not in _HTU31D_HUMIDITY_RES:
             raise ValueError(
-                "Humidity resolution must be one of: {}".format(_HTU31D_HUMIDITY_RES)
+                f"Humidity resolution must be one of: {_HTU31D_HUMIDITY_RES}"
             )
         register = self._conversion_command & 0xCF
         hum_res = _HTU31D_HUMIDITY_RES.index(value)
         self._conversion_command = register | hum_res << 4
 
     @property
-    def temp_resolution(self):
+    def temp_resolution(self) -> Literal["0.040", "0.025", "0.016", "0.012"]:
         """The current temperature resolution in Celsius.
 
         Possibles values:
@@ -223,17 +232,19 @@ class HTU31D:
         return _HTU31D_TEMP_RES[self._conversion_command >> 2 & 3]
 
     @temp_resolution.setter
-    def temp_resolution(self, value):
+    def temp_resolution(
+        self, value: Literal["0.040", "0.025", "0.016", "0.012"]
+    ) -> None:
         if value not in _HTU31D_TEMP_RES:
             raise ValueError(
-                "Temperature resolution must be one of: {}".format(_HTU31D_TEMP_RES)
+                f"Temperature resolution must be one of: {_HTU31D_TEMP_RES}"
             )
         register = self._conversion_command & 0xF3
         temp_res = _HTU31D_TEMP_RES.index(value)
         self._conversion_command = register | temp_res << 2
 
     @staticmethod
-    def _crc(value):
+    def _crc(value) -> int:
         polynom = 0x988000  # x^8 + x^5 + x^4 + 1
         msb = 0x800000
         mask = 0xFF8000
