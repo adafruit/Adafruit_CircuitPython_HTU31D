@@ -98,7 +98,7 @@ class HTU31D:
 
     def __init__(self, i2c_bus: I2C, address: int = _HTU31D_DEFAULT_ADDR) -> None:
         if address not in _HTU31D_ADDRESSES:
-            raise ValueError("Invalid address: {address:#x}")
+            raise ValueError(f"Invalid address: {address:#x}")
         self.i2c_device = i2c_device.I2CDevice(i2c_bus, address)
         self._conversion_command = _HTU31D_CONVERSION
         self._buffer = bytearray(6)
@@ -111,7 +111,7 @@ class HTU31D:
         with self.i2c_device as i2c:
             i2c.write_then_readinto(self._buffer, self._buffer, out_end=1, in_end=4)
         ser = struct.unpack(">I", self._buffer[0:4])
-        return ser
+        return ser[0]
 
     def reset(self) -> None:
         """Perform a soft reset of the sensor, resetting all settings to their power-on defaults"""
@@ -128,8 +128,8 @@ class HTU31D:
 
     @heater.setter
     def heater(self, new_mode: bool) -> None:
-        # check its a boolean
-        if not new_mode in (True, False):
+        # check it is a boolean
+        if not isinstance(new_mode, bool):
             raise AttributeError("Heater mode must be boolean")
         # cache the mode
         self._heater = new_mode
