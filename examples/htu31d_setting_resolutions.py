@@ -7,7 +7,8 @@ import adafruit_htu31d
 
 
 # import htu31d_setting_resolutions
-i2c = board.I2C()
+i2c = board.I2C()  # uses board.SCL and board.SDA
+# i2c = board.STEMMA_I2C()  # For using the built-in STEMMA QT connector on a microcontroller
 htu = adafruit_htu31d.HTU31D(i2c)
 
 

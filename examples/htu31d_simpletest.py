@@ -7,6 +7,7 @@ import board
 import adafruit_htu31d
 
 i2c = board.I2C()  # uses board.SCL and board.SDA
+# i2c = board.STEMMA_I2C()  # For using the built-in STEMMA QT connector on a microcontroller
 htu = adafruit_htu31d.HTU31D(i2c)
 print("Found HTU31D with serial number", hex(htu.serial_number))
 
