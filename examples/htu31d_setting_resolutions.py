@@ -47,4 +47,3 @@ while True:
             print(f"Temperature: {htu.temperature:.2f}")
             print("")
             time.sleep(0.5)
-
