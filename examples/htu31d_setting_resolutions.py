@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 
+import time
 import board
 import adafruit_htu31d
 
@@ -24,7 +25,24 @@ htu.temp_resolution = "0.016"
 # Possible values are "0.020%", "0.014%", "0.010%" and "0.007%"
 htu.humidity_resolution = "0.007%"
 
-
-# Printing the New Values
 print("Temperature Resolution: ", htu.temp_resolution)
 print("Humidity Resolution: ", htu.humidity_resolution)
+
+hum_res = ["0.020%", "0.014%", "0.010%", "0.007%"]
+temp_res = ["0.040", "0.025", "0.016", "0.012"]
+
+while True:
+    for humidity_resolution in hum_res:
+        print(f"Current Humidity Resolution: {humidity_resolution}")
+        for _ in range(3):
+            print(f"Humidity: {htu.relative_humidity:.2f}")
+            print(f"Temperature: {htu.temperature:.2f}")
+            print("")
+            time.sleep(0.5)
+    for temperature_resolution in temp_res:
+        print(f"Current Temperature Resolution: {temperature_resolution}")
+        for _ in range(3):
+            print(f"Humidity: {htu.relative_humidity:.2f}")
+            print(f"Temperature: {htu.temperature:.2f}")
+            print("")
+            time.sleep(0.5)
