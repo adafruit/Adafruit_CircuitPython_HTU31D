@@ -163,7 +163,9 @@ class HTU31D:
             i2c.write(self._buffer, end=1)
 
         # wait conversion time
-        time.sleep(0.02)
+        # Changed as reading temp and hum at OS3 is 20.32 ms
+        # See datasheet Table 5
+        time.sleep(0.03)
 
         self._buffer[0] = _HTU31D_READTEMPHUM
         with self.i2c_device as i2c:
