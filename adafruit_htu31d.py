@@ -30,15 +30,17 @@ Implementation Notes
 
 """
 
-import time
 import struct
+import time
+
 from adafruit_bus_device import i2c_device
 from micropython import const
 
 try:
     from typing import Tuple
-    from typing_extensions import Literal
+
     from busio import I2C
+    from typing_extensions import Literal
 except ImportError:
     pass
 
@@ -172,9 +174,7 @@ class HTU31D:
             i2c.write_then_readinto(self._buffer, self._buffer, out_end=1)
 
         # separate the read data
-        temperature, temp_crc, humidity, humidity_crc = struct.unpack_from(
-            ">HBHB", self._buffer
-        )
+        temperature, temp_crc, humidity, humidity_crc = struct.unpack_from(">HBHB", self._buffer)
 
         # check CRC of bytes
         if temp_crc != self._crc(temperature) or humidity_crc != self._crc(humidity):
@@ -207,13 +207,9 @@ class HTU31D:
         return _HTU31D_HUMIDITY_RES[self._conversion_command >> 3 & 3]
 
     @humidity_resolution.setter
-    def humidity_resolution(
-        self, value: Literal["0.020%", "0.014%", "0.010%", "0.007%"]
-    ) -> None:
+    def humidity_resolution(self, value: Literal["0.020%", "0.014%", "0.010%", "0.007%"]) -> None:
         if value not in _HTU31D_HUMIDITY_RES:
-            raise ValueError(
-                f"Humidity resolution must be one of: {_HTU31D_HUMIDITY_RES}"
-            )
+            raise ValueError(f"Humidity resolution must be one of: {_HTU31D_HUMIDITY_RES}")
         register = self._conversion_command & 0xE7
         hum_res = _HTU31D_HUMIDITY_RES.index(value)
         self._conversion_command = register | hum_res << 3
@@ -234,13 +230,9 @@ class HTU31D:
         return _HTU31D_TEMP_RES[self._conversion_command >> 1 & 3]
 
     @temp_resolution.setter
-    def temp_resolution(
-        self, value: Literal["0.040", "0.025", "0.016", "0.012"]
-    ) -> None:
+    def temp_resolution(self, value: Literal["0.040", "0.025", "0.016", "0.012"]) -> None:
         if value not in _HTU31D_TEMP_RES:
-            raise ValueError(
-                f"Temperature resolution must be one of: {_HTU31D_TEMP_RES}"
-            )
+            raise ValueError(f"Temperature resolution must be one of: {_HTU31D_TEMP_RES}")
         register = self._conversion_command & 0xF9
         temp_res = _HTU31D_TEMP_RES.index(value)
         self._conversion_command = register | temp_res << 1
