@@ -4,10 +4,12 @@
 # SPDX-License-Identifier: MIT
 
 import time
+
 import board
 from adafruit_display_text.bitmap_label import Label
-from terminalio import FONT
 from displayio import Group
+from terminalio import FONT
+
 import adafruit_htu31d
 
 # Simple demo of using the built-in display.
@@ -39,9 +41,7 @@ while True:
     # update the text of the label(s) to show the sensor readings
     temperature, relative_humidity = htu.measurements
     display_output_label.text = (
-        f"Temperature: {temperature:.1f} C"
-        + "\n"
-        + f"Humidity: {relative_humidity:.1f} %"
+        f"Temperature: {temperature:.1f} C" + "\n" + f"Humidity: {relative_humidity:.1f} %"
     )
     # wait for a bit
     time.sleep(0.5)

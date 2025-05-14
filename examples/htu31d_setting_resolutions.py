@@ -3,9 +3,10 @@
 # SPDX-License-Identifier: MIT
 
 import time
-import board
-import adafruit_htu31d
 
+import board
+
+import adafruit_htu31d
 
 # import htu31d_setting_resolutions
 i2c = board.I2C()  # uses board.SCL and board.SDA
